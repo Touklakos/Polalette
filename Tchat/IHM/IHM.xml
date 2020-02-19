@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROJET NOM="IHM" TYPE="Java">
+  <FICHIER>Fenetre.java</FICHIER>
+  <FICHIER>TestFenetre.java</FICHIER>
+  <FICHIER>ChampTexte.java</FICHIER>
+  <FICHIER>Connection.java</FICHIER>
+  <FICHIER>Tchat.java</FICHIER>
+  <FICHIER>ZoneTexte.java</FICHIER>
+  <FICHIER>Discord.java</FICHIER>
+</PROJET>
+
