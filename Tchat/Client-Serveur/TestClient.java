@@ -21,7 +21,7 @@ public class TestClient {
 
       c.close();
 
-    } catch(ServeurDeconnecteException e) {
+    } catch(ServeurDeconnecteException e) { 
 
       System.out.println("Impossibme de se connecter au serveur");
 
