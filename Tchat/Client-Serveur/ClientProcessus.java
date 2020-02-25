@@ -19,39 +19,41 @@ public class ClientProcessus implements Runnable{
   private Socket client;
   private PrintWriter writer;
   private BufferedInputStream reader;
+  private Serveur serveur;
 
-  private Set<Socket> clients;
+  private boolean enMarche;
 
 
 
-  public ClientProcessus(Socket client) {
+  public ClientProcessus(Socket client, Serveur serveur) {
 
       this.client = client;
-      this.clients = new LinkedHashSet<Socket>();
-
-
-  }
-
-
-  public void run() {
-
-    while(!this.client.isClosed()) {
-
-      System.out.println("yolo");
+      this.serveur = serveur;
+      this.enMarche = true;
 
       try {
 
         this.writer = new PrintWriter(this.client.getOutputStream());
         this.reader = new BufferedInputStream(this.client.getInputStream());
 
+      } catch(IOException e) {
+
+        System.out.println(e);
+
+      }
+  }
+
+
+  public void run() {
+
+    while(this.enMarche) {
+
+      try {
 
         String temp = this.recoit();
-        if(temp.equals("CLOSE")) {
-          this.client.close();
-        } else {
-          this.envoitAll(temp);
-        }
-        Thread.sleep(5000);
+        System.out.println(temp);
+
+        this.serveur.traite(temp, this);
 
       } catch(SocketException e) {
 
@@ -62,69 +64,33 @@ public class ClientProcessus implements Runnable{
 
         System.out.println(e);
 
-      } catch(InterruptedException e) {
-
-        System.out.println(e);
-
       }
 
     }
 
-  }
-
-  public void ajoute(Socket c) {
-
-    this.clients.add(c);
+    System.out.println("salut !");
 
   }
 
-  public void retire(Socket c) {
+  public void close() {
 
-    this.clients.remove(c);
-    if(c.equals(this.client)) {
-      try {
+    this.enMarche = false;
 
-        c.close();
+  }
 
-      } catch(IOException e) {
 
-        System.out.println(e);
+  public Socket getClient() {
 
-      }
-
-    }
+    return this.client;
 
   }
 
 
 
-  private void envoit(String message) {
+  public void envoit(String message) {
 
     this.writer.write(message);
     this.writer.flush();
-
-  }
-
-  private void envoitAll(String message) {
-
-    Set<Socket> temp = this.clients;
-
-    for(Socket s : temp) {
-
-      try {
-
-        this.writer = new PrintWriter(s.getOutputStream());
-        this.writer.write(message);
-        this.writer.flush();
-
-      } catch(IOException e) {
-
-        System.out.println(e);
-        this.retire(s);
-
-      }
-
-    }
 
   }
 

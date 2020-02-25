@@ -9,10 +9,21 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 
 
+/*
+ * Cette classe représente le serveur du tchat
+ */
 public class Serveur {
 
   private static final int FILE_ATTENTE = 100;
+
+  /**
+   * Le port par defaut qu'utilisera le serveur
+   */
   private static final int PORT_DEFAUT = 2048;
+
+  /**
+   * L'IP par defaut surlequel sera le serveur par defaut(Sa machine)
+   */
   private static final String IP_DEFAUT = "127.0.0.1";
 
 
@@ -21,13 +32,22 @@ public class Serveur {
 
   private boolean enMarche = true;
 
+  /**
+   * Ce constructeur permet de créer un nouveau serveur
+   *
+   * Les paramètres(adresse IP, port) par defaut seront pris
+   */
   public Serveur() {
 
     this(IP_DEFAUT, PORT_DEFAUT);
 
   }
 
-
+  /**
+   * Ce constructeur permet de créer un nouveau client avec les paramètres saisis
+   * @param IP L'adresse IP auquel se connectera le client
+   * @param port Le port qu'utilisera le client
+   */
   public Serveur(String IP, int port) {
 
     try {
@@ -48,6 +68,46 @@ public class Serveur {
 
   }
 
+
+  /**
+   * Cette méthode permet d'envoyer un message à chaque client
+   * @param message Le messag à envoyer
+   */
+  public void envoitAll(String message) {
+
+    Set<ClientProcessus> temp = this.clients;
+
+    for(ClientProcessus s : temp) {
+
+      s.envoit(message);
+
+    }
+
+  }
+
+  /**
+   * Cette méthode permet de traiter un message envoyé par un client
+   * @param message Le message envoyépar le client
+   * @param client Le client
+   */
+  public void traite(String message, ClientProcessus client) {
+
+    if(message.equals("CLOSE")) {
+
+      client.close();
+      this.clients.remove(client);
+
+    } else {
+
+      this.envoitAll(message);
+
+    }
+
+  }
+
+  /**
+   * Cette méthode permet d'ouvrir le serveur
+   */
   public void open() {
 
     while(enMarche) {
@@ -56,14 +116,11 @@ public class Serveur {
 
         Socket client = this.serveur.accept();
         System.out.println("Connection reçu");
-        ClientProcessus clientProcessus = new ClientProcessus(client);
-        Thread t = new Thread(clientProcessus);
+
+        ClientProcessus clientProcessus = new ClientProcessus(client, this);
         this.clients.add(clientProcessus);
-        for(ClientProcessus c : clients) {
 
-          c.ajoute(client);
-
-        }
+        Thread t = new Thread(clientProcessus);
         t.start();
 
       } catch(IOException e) {
