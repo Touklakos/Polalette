@@ -5,7 +5,7 @@
  */
 public class ServeurDeconnecteException extends Exception {
 
-  public ServeurDeconnecteException() {
+  public ServeurDeconnecteException() { 
 
     super();
 
