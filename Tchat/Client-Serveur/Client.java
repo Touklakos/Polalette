@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 /**
  * Cette classe represente un client qui veux se connecter à un tchat
  */
-public class Client {
+public class Client implements Ecouteur {
 
   /**
    * Le port par defaut qu'utilisera le client
@@ -26,7 +26,7 @@ public class Client {
   private PrintWriter writer;
   private BufferedInputStream reader;
 
-  private ClientEcoute ecoute;
+  private ProcessusEcoute ecoute;
 
   /**
    * Ce constructeur permet de créer un nouveau client
@@ -53,7 +53,7 @@ public class Client {
       this.client = new Socket(IP, port);
       this.writer = new PrintWriter(this.client.getOutputStream(), true);
       this.reader = new BufferedInputStream(this.client.getInputStream());
-      this.ecoute = new ClientEcoute(this);
+      this.ecoute = new ProcessusEcoute(this.client, this);
 
       Thread t = new Thread(this.ecoute);
       t.start();
@@ -88,6 +88,17 @@ public class Client {
   public Socket getSocket() {
 
     return this.client;
+
+  }
+
+  /**
+   * Cette fonction permet au client de traiter les messages qu'il recoit du processus d'écoute
+   * @param message Le message reçu
+   * @param processusEcoute Le processus qui a reçu et transmis le message
+   */
+  public void traite(String message, ProcessusEcoute processusEcoute) {
+
+    System.out.println(message);
 
   }
 

@@ -14,27 +14,37 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 
 
-public class ClientProcessus implements Runnable{
+/**
+ * Cette classe permet de recevoir et d'emettre des messages avec un socket
+ */
+public class ProcessusEcoute implements Runnable{
 
-  private Socket client;
+  private Socket ecoute;
   private PrintWriter writer;
   private BufferedInputStream reader;
-  private Serveur serveur;
+
+  private Ecouteur ecouteur;
 
   private boolean enMarche;
 
 
+  /**
+   * Cette méthode permet de créer un nouveau processus d'écoute
+   *
+   * Après la création de l'objet il doit être mis dans un Thread puis lancé
+   * @param ecoute La socket d'emission et de récéption de message
+   * @param ecouteur L'objet qui va traiter les messages reçu
+   */
+  public ProcessusEcoute(Socket ecoute, Ecouteur ecouteur) {
 
-  public ClientProcessus(Socket client, Serveur serveur) {
-
-      this.client = client;
-      this.serveur = serveur;
+      this.ecoute = ecoute;
+      this.ecouteur = ecouteur;
       this.enMarche = true;
 
       try {
 
-        this.writer = new PrintWriter(this.client.getOutputStream());
-        this.reader = new BufferedInputStream(this.client.getInputStream());
+        this.writer = new PrintWriter(this.ecoute.getOutputStream());
+        this.reader = new BufferedInputStream(this.ecoute.getInputStream());
 
       } catch(IOException e) {
 
@@ -43,7 +53,9 @@ public class ClientProcessus implements Runnable{
       }
   }
 
-
+  /**
+   * Cette méthode est appelé automatiquement quand le Thread est lancé
+   */
   public void run() {
 
     while(this.enMarche) {
@@ -51,9 +63,7 @@ public class ClientProcessus implements Runnable{
       try {
 
         String temp = this.recoit();
-        System.out.println(temp);
-
-        this.serveur.traite(temp, this);
+        this.ecouteur.traite(temp, this);
 
       } catch(SocketException e) {
 
@@ -72,6 +82,9 @@ public class ClientProcessus implements Runnable{
 
   }
 
+  /**
+   * Cette méthode permet d'arrêter le processus d'écoute
+   */
   public void close() {
 
     this.enMarche = false;
@@ -79,14 +92,21 @@ public class ClientProcessus implements Runnable{
   }
 
 
-  public Socket getClient() {
+  /**
+   * Cette méthode permet de connaître le socket du processus
+   * @return Le socket
+   */
+  public Socket getEcoute() {
 
-    return this.client;
+    return this.ecoute;
 
   }
 
 
-
+  /**
+   * Cette méthode permet d'envoyer un message au socket
+   * @param message Le message à envoyer
+   */
   public void envoit(String message) {
 
     this.writer.write(message);
