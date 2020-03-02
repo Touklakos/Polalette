@@ -4,6 +4,9 @@
 *
 */
 
+package ihm;
+
+
 import java.awt.Graphics;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -20,19 +23,19 @@ public class Discord extends JPanel {
 	//	this.setLayout(new GridLayout(2, 1, 10, 10));
 
 		this.tchat = new Tchat();
-		
+
 
 		this.connection = new Connection(this.tchat);
 		this.add(this.connection);
 		this.add(this.tchat);
-		
+
 	}
 
 	@Override
 	protected void paintComponent(Graphics g){
-		
-		
+
+
 	}
-  
-	
+
+
 }

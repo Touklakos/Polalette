@@ -1,8 +1,9 @@
 
+package client_serveur;
 
-import java.io.BufferedInputStream;
+
+
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -23,8 +24,6 @@ public class Client implements Ecouteur {
 
 
   private Socket client;
-  private PrintWriter writer;
-  private BufferedInputStream reader;
 
   private ProcessusEcoute ecoute;
 
@@ -51,8 +50,6 @@ public class Client implements Ecouteur {
     try {
 
       this.client = new Socket(IP, port);
-      this.writer = new PrintWriter(this.client.getOutputStream(), true);
-      this.reader = new BufferedInputStream(this.client.getInputStream());
       this.ecoute = new ProcessusEcoute(this.client, this);
 
       Thread t = new Thread(this.ecoute);
@@ -70,14 +67,20 @@ public class Client implements Ecouteur {
 
   }
 
+  @Override
+  public String getNom() {
+
+    return "";
+    
+  }
+
   /**
    * Cette méthode permet au client d'envoyer un message au serveur
    * @param message Le message qui sera envoyé au serveur
    */
   public void envoit(String message) {
 
-    this.writer.write(message);
-    this.writer.flush();
+    this.ecoute.envoit(message);
 
   }
 

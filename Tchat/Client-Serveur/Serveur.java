@@ -1,4 +1,7 @@
 
+package client_serveur;
+
+
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -11,6 +14,7 @@ import java.util.LinkedHashSet;
 
 /*
  * Cette classe représente le serveur du tchat
+ * Quand on est connecté à celui-ci et que l'on envoit un message il sera transmis à touts les autres clients connectés
  */
 public class Serveur implements Ecouteur {
 
@@ -82,6 +86,13 @@ public class Serveur implements Ecouteur {
       s.envoit(message);
 
     }
+
+  }
+
+  @Override
+  public String getNom() {
+
+    return "Serveur";
 
   }
 

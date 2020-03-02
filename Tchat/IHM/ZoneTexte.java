@@ -4,6 +4,8 @@
 *
 */
 
+package ihm;
+
 
 import java.awt.Graphics;
 import java.awt.BorderLayout;
@@ -14,7 +16,7 @@ import javax.swing.SwingConstants;
 
 
 public class ZoneTexte extends JPanel {
-	
+
 	private static final int TAILLE_AREA_X = 10;
 	private static final int TAILLE_AREA_Y = 20;
 
@@ -28,23 +30,42 @@ public class ZoneTexte extends JPanel {
 
 		this.label = new JLabel(label, SwingConstants.CENTER);
 		this.add(this.label, BorderLayout.NORTH);
-		
+
 		this.textArea = new JTextArea(TAILLE_AREA_X, TAILLE_AREA_Y);
 		this.add(this.textArea, BorderLayout.CENTER);
-		
+
 	}
 
-	
+
 	public void setEditable(boolean b) {
 
 		this.textArea.setEditable(b);
+
+	}
+
+	public JTextArea getJTextArea() {
+
+		return this.textArea;
 		
+	}
+
+
+	public String getText() {
+
+		return this.textArea.getText();
+
+	}
+
+	public void setText(String s) {
+
+		this.textArea.setText(s);
+
 	}
 
 	@Override
 	protected void paintComponent(Graphics g){
-		
-		
+
+
 	}
-	
+
 }

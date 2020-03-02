@@ -4,6 +4,9 @@
 *
 */
 
+package ihm;
+
+
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Graphics;
@@ -13,6 +16,9 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
+
+import client_serveur.ClientGraphique;
+import client_serveur.ServeurDeconnecteException;
 
 
 public class Connection extends JPanel implements ActionListener {
@@ -29,16 +35,13 @@ public class Connection extends JPanel implements ActionListener {
 	public Connection(Tchat tchat) {
 
 
-	//	this.setLayout(new GridLayout(2,2,5,5));
-
-
 		this.nom = new ChampTexte("Nom", 20);
 		this.add(this.nom);
 
 		this.ip = new ChampTexte("IP", 10);
 		this.add(this.ip);
 
-		this.port = new ChampTexte("Port",5);
+		this.port = new ChampTexte("Port", 5);
 		this.add(this.port);
 
 		this.courant = new JButton("Connection");
@@ -48,7 +51,6 @@ public class Connection extends JPanel implements ActionListener {
 		this.tchat = tchat;
 
 		this.courant.addActionListener(this);
-		this.courant.addActionListener(this.tchat);
 
 	}
 
@@ -83,15 +85,28 @@ public class Connection extends JPanel implements ActionListener {
 
 		if(this.courant.getText() == "Connection") {
 
-			System.out.println("Coucou");
-			this.courant.setText("Deconnection");
-			this.desactive();
+			try {
+
+				this.tchat.connecte(this.nom.getText(), this.ip.getText(), this.port.getText());
+				System.out.println("Coucou");
+				this.courant.setText("Deconnection");
+				this.desactive();
+
+			} catch(ServeurDeconnecteException a) {
+
+				System.out.println("Impossible de se connecter au serveur");
+
+			}
+
+
 
 		} else if(this.courant.getText() == "Deconnection") {
 
 			System.out.println("Au revoir");
 			this.courant.setText("Connection");
 			this.reactive();
+
+			this.tchat.deconnecte();
 
 		}
 

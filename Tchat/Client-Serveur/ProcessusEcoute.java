@@ -1,4 +1,5 @@
 
+package client_serveur;
 
 
 
@@ -100,6 +101,13 @@ public class ProcessusEcoute implements Runnable{
 
     return this.ecoute;
 
+  }
+
+
+  public String getNom() {
+
+    return this.ecouteur.getNom();
+    
   }
 
 

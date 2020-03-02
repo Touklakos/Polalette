@@ -4,6 +4,9 @@
 *
 */
 
+package ihm;
+
+
 import java.awt.Graphics;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -35,6 +38,12 @@ public class ChampTexte extends JPanel{
 	public void setEditable(boolean b) {
 
 		this.textField.setEditable(b);
+
+	}
+
+	public String getText() {
+
+		return this.textField.getText();
 
 	}
 
