@@ -4,6 +4,9 @@
 *
 */
 
+package ihm;
+
+
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
@@ -18,6 +21,11 @@ import javax.swing.GroupLayout;
 
 
 
+import client_serveur.ClientGraphique;
+import client_serveur.ServeurDeconnecteException;
+
+
+
 public class Tchat extends JPanel implements ActionListener {
 
 
@@ -29,8 +37,13 @@ public class Tchat extends JPanel implements ActionListener {
 	private boolean actif;
 	private GroupLayout layout;
 
-	
+	private ClientGraphique clientGraphique;
+	private String nom;
+
+
 	public Tchat() {
+
+
 
 
 		this.setLayout(new GridBagLayout());
@@ -47,7 +60,7 @@ public class Tchat extends JPanel implements ActionListener {
 		c.insets = new Insets(10, 15, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
 		this.add(this.connectes, c);
-		
+
 		this.discussion = new ZoneTexte("Discussion");
 		c.gridx = 1;
 		c.gridy = 0;
@@ -59,7 +72,7 @@ public class Tchat extends JPanel implements ActionListener {
 		c.insets = new Insets(10, 15, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
 		this.add(this.discussion, c);
-		
+
 		this.message = new ZoneTexte("Message");
 		c.gridx = 1;
 		c.gridy = 2;
@@ -71,7 +84,7 @@ public class Tchat extends JPanel implements ActionListener {
 		c.insets = new Insets(10, 15, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
 		this.add(this.message, c);
-		
+
 		this.envoyer = new JButton("Envoyer");
 		c.gridx = 1;
 		c.gridy = 3;
@@ -83,16 +96,45 @@ public class Tchat extends JPanel implements ActionListener {
 		c.insets = new Insets(10, 15, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
 		this.add(this.envoyer, c);
-		
-		
+
+
+		this.envoyer.addActionListener(this);
 		this.desactive();
-		
+
+	}
+
+	public void deconnecte() {
+
+		this.clientGraphique.close();
+		this.desactive();
+
+	}
+
+	public void connecte(String nom, String ip, String port) throws ServeurDeconnecteException {
+
+		this.nom = nom;
+
+		if(!this.actif) {
+
+			try {
+
+				this.clientGraphique = new ClientGraphique(this.message.getJTextArea(), this.discussion.getJTextArea(), this.nom);
+				this.reactive();
+
+			} catch(ServeurDeconnecteException e) {
+
+				throw e;
+
+			}
+
+		}
+
 	}
 
 	@Override
 	protected void paintComponent(Graphics g){
 
-		
+
 	}
 
 	private void modifEditable(boolean b) {
@@ -100,39 +142,39 @@ public class Tchat extends JPanel implements ActionListener {
 		this.connectes.setEditable(b);
 		this.discussion.setEditable(b);
 		this.message.setEditable(b);
-		
+
+	}
+
+	private modifEditable(boolean b) {
+
+		this.modifEditable(b);
+		this.actif = b;
+		this.setVisible(b);
 	}
 
 	private void desactive() {
 
-		this.modifEditable(false);
-		this.actif = false;
-		this.setVisible(false);
-		this.repaint();
-		
+		modifEditable(false);
+
 	}
-	
+
 	private void reactive() {
 
-		this.modifEditable(true);
-		this.actif = true;
-		this.setVisible(true);
-		
+		modifEditable(true);
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		if(!this.actif) {
+		Object evt = e.getSource();
 
-			this.reactive();
-			
-		} else if(this.actif) {
+		if(evt == this.envoyer) {
 
-			this.desactive();
-			
+			this.clientGraphique.envoit();
+
 		}
- 
+
 	}
-	
+
 }

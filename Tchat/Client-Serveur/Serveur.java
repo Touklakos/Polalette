@@ -1,4 +1,7 @@
 
+package client_serveur;
+
+
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -11,8 +14,9 @@ import java.util.LinkedHashSet;
 
 /*
  * Cette classe représente le serveur du tchat
+ * Quand on est connecté à celui-ci et que l'on envoit un message il sera transmis à touts les autres clients connectés
  */
-public class Serveur {
+public class Serveur implements Ecouteur {
 
   private static final int FILE_ATTENTE = 100;
 
@@ -28,7 +32,7 @@ public class Serveur {
 
 
   private ServerSocket serveur;
-  private Set<ClientProcessus> clients;
+  private Set<ProcessusEcoute> clients;
 
   private boolean enMarche = true;
 
@@ -64,7 +68,7 @@ public class Serveur {
 
     }
 
-    this.clients = new LinkedHashSet<ClientProcessus>();
+    this.clients = new LinkedHashSet<ProcessusEcoute>();
 
   }
 
@@ -75,13 +79,20 @@ public class Serveur {
    */
   public void envoitAll(String message) {
 
-    Set<ClientProcessus> temp = this.clients;
+    Set<ProcessusEcoute> temp = this.clients;
 
-    for(ClientProcessus s : temp) {
+    for(ProcessusEcoute s : temp) {
 
       s.envoit(message);
 
     }
+
+  }
+
+  @Override
+  public String getNom() {
+
+    return "Serveur";
 
   }
 
@@ -90,16 +101,17 @@ public class Serveur {
    * @param message Le message envoyépar le client
    * @param client Le client
    */
-  public void traite(String message, ClientProcessus client) {
+  public void traite(String message, ProcessusEcoute processusEcoute) {
 
     if(message.equals("CLOSE")) {
 
-      client.close();
-      this.clients.remove(client);
+      processusEcoute.close();
+      this.clients.remove(processusEcoute);
 
     } else {
 
       this.envoitAll(message);
+      System.out.println(message);
 
     }
 
@@ -117,10 +129,10 @@ public class Serveur {
         Socket client = this.serveur.accept();
         System.out.println("Connection reçu");
 
-        ClientProcessus clientProcessus = new ClientProcessus(client, this);
-        this.clients.add(clientProcessus);
+        ProcessusEcoute processusEcoute = new ProcessusEcoute(client, this);
+        this.clients.add(processusEcoute);
 
-        Thread t = new Thread(clientProcessus);
+        Thread t = new Thread(processusEcoute);
         t.start();
 
       } catch(IOException e) {

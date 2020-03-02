@@ -1,5 +1,7 @@
 
 import java.util.Scanner;
+import client_serveur.Client;
+import client_serveur.ServeurDeconnecteException;
 
 public class TestClient {
 
@@ -21,9 +23,9 @@ public class TestClient {
 
       c.close();
 
-    } catch(ServeurDeconnecteException e) { 
+    } catch(ServeurDeconnecteException e) {
 
-      System.out.println("Impossibme de se connecter au serveur");
+      System.out.println("Impossible de se connecter au serveur");
 
     }
 

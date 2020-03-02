@@ -4,6 +4,9 @@
 *
 */
 
+package ihm;
+
+
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
@@ -20,8 +23,8 @@ public class Fenetre extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.add(this.discord);
 		this.setVisible(true);
-		
+
 	}
 
-	
+
 }
