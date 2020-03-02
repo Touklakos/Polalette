@@ -103,6 +103,31 @@ public class Tchat extends JPanel implements ActionListener {
 
 	}
 
+
+	public ZoneTexte getMessage() {
+
+		return this.message;
+
+	}
+
+	public ZoneTexte getDisscution() {
+
+		return this.discussion;
+
+	}
+
+	public ZoneTexte getConnectes() {
+
+		return this.connectes;
+
+	}
+
+	public String getNom() {
+
+		return this.nom;
+
+	}
+
 	public void deconnecte() {
 
 		this.clientGraphique.close();

@@ -2,26 +2,27 @@
 package client_serveur;
 
 import javax.swing.text.JTextComponent;
+import javax.swing.text.JTextComponent;
+
+import ihm.Tchat;
+
 
 public class ClientGraphique extends Client {
 
-  private JTextComponent recup;
-  private JTextComponent envoit;
-  private String nom;
+  private Tchat tchat;
 
-  public ClientGraphique(JTextComponent recup, JTextComponent envoit, String nom) throws ServeurDeconnecteException {
+  public ClientGraphique(Tchat tchat) throws ServeurDeconnecteException {
 
     super();
-    this.recup = recup;
-    this.envoit = envoit;
-    this.nom = nom;
+    this.tchat = tchat;
 
   }
 
-  @Override
-  public String getNom() {
+  public ClientGraphique(String IP, int port, Tchat tchat) throws ServeurDeconnecteException {
 
-    return this.nom;
+    super(IP, port);
+    this.tchat = tchat;
+
 
   }
 
@@ -29,14 +30,22 @@ public class ClientGraphique extends Client {
   @Override
   public void traite(String message, ProcessusEcoute processusEcoute) {
 
-    this.envoit.setText(this.envoit.getText() + message);
+    this.tchat.getDisscution().setText(this.tchat.getDisscution().getText() + message);
 
   }
 
   public void envoit() {
 
-    super.envoit(this.nom + " : " + this.recup.getText());
-    this.recup.setText("");
+    super.envoit(this.tchat.getMessage().getText());
+    this.tchat.getMessage().setText("");
 
   }
+
+  @Override
+  public String getNom() {
+
+    return this.tchat.getNom();
+
+  }
+
 }

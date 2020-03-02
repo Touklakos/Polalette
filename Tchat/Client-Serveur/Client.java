@@ -23,6 +23,7 @@ public class Client implements Ecouteur {
   private static final String IP_DEFAUT = "127.0.0.1";
 
 
+
   private Socket client;
 
   private ProcessusEcoute ecoute;
@@ -70,9 +71,10 @@ public class Client implements Ecouteur {
   @Override
   public String getNom() {
 
-    return "";
-    
+    return "Client";
+
   }
+
 
   /**
    * Cette méthode permet au client d'envoyer un message au serveur
@@ -80,7 +82,7 @@ public class Client implements Ecouteur {
    */
   public void envoit(String message) {
 
-    this.ecoute.envoit(message);
+    this.ecoute.envoit(this.getNom() + " : " + message);
 
   }
 
