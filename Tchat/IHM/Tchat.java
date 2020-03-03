@@ -54,7 +54,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
-		this.connectes = new ZoneTexte("Connectés");
+		this.connectes = new ZoneTexte("Connectés", 10, 10);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 1;
@@ -64,9 +64,10 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		c.anchor = GridBagConstraints.FIRST_LINE_START;
 		c.insets = new Insets(10, 15, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
+		this.connectes.setEditable(false);
 		this.add(this.connectes, c);
 
-		this.discussion = new ZoneTexte("Discussion");
+		this.discussion = new ZoneTexte("Discussion", 16, 50);
 		c.gridx = 1;
 		c.gridy = 0;
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -76,9 +77,10 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(10, 15, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
+		this.discussion.setEditable(false);
 		this.add(this.discussion, c);
 
-		this.message = new ZoneTexte("Message");
+		this.message = new ZoneTexte("Message", 4, 50);
 		c.gridx = 1;
 		c.gridy = 2;
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -114,7 +116,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 		for(String s : 	nomConnectes) {
 
-			this.connectes.setText(this.connectes.getText() + s);
+			this.connectes.setText(this.connectes.getText() + s + "\n");
 
 		}
 
@@ -158,11 +160,10 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 		} else {
 
+			this.discussion.setSelectedTextColor(Color.RED);
 			this.discussion.setText(this.discussion.getText() + message);
 
 		}
-
-
 
 	}
 
@@ -195,6 +196,9 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 		this.clientGraphique.envoit("\\CLOSE");
 		this.clientGraphique.close();
+		this.message.setText("");
+		this.discussion.setText("");
+		this.connectes.setText("");
 		this.desactive();
 
 	}
@@ -237,8 +241,6 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 	private void modifEditable(boolean b) {
 
-		this.connectes.setEditable(b);
-		this.discussion.setEditable(b);
 		this.message.setEditable(b);
 		this.actif = b;
 		this.setVisible(b);

@@ -9,6 +9,7 @@ package ihm;
 
 import java.awt.Graphics;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -19,22 +20,28 @@ import javax.swing.JScrollPane;
 public class ZoneTexte extends JPanel {
 
 	private static final int TAILLE_AREA_X = 10;
-	private static final int TAILLE_AREA_Y = 20;
+	private static final int TAILLE_AREA_Y = 30;
 
 	private JLabel label;
 	private JTextArea textArea;
 
 
-	public ZoneTexte(String label) {
+	public ZoneTexte(String label, int tailleX, int tailleY) {
 
 		this.setLayout(new BorderLayout());
 
 		this.label = new JLabel(label, SwingConstants.CENTER);
 		this.add(this.label, BorderLayout.NORTH);
 
-		this.textArea = new JTextArea(TAILLE_AREA_X, TAILLE_AREA_Y);
+		this.textArea = new JTextArea(tailleX, tailleY);
 		this.add(new JScrollPane(this.textArea), BorderLayout.CENTER);
 		//this.add(this.textArea, BorderLayout.CENTER);
+
+	}
+
+	public void setSelectedTextColor(Color c) {
+
+		this.textArea.setSelectedTextColor(c);
 
 	}
 

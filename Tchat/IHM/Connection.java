@@ -83,27 +83,33 @@ public class Connection extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		if(this.courant.getText() == "Connection") {
+		if(!(this.nom.getText().equals(""))) {
 
-			try {
+			this.repaint();
 
-				this.tchat.connecte(this.nom.getText(), this.ip.getText(), this.port.getText());
-				System.out.println("Coucou");
-				this.courant.setText("Deconnection");
-				this.desactive();
+			if(this.courant.getText() == "Connection") {
 
-			} catch(ServeurDeconnecteException a) {
+				try {
 
-				System.out.println("Impossible de se connecter au serveur");
+					this.tchat.connecte(this.nom.getText(), this.ip.getText(), this.port.getText());
+					System.out.println("Coucou");
+					this.courant.setText("Deconnection");
+					this.desactive();
+
+				} catch(ServeurDeconnecteException a) {
+
+					System.out.println("Impossible de se connecter au serveur");
+
+				}
+
+			} else if(this.courant.getText() == "Deconnection") {
+
+				System.out.println("Au revoir");
+				this.courant.setText("Connection");
+				this.reactive();
+				this.tchat.deconnecte();
 
 			}
-
-		} else if(this.courant.getText() == "Deconnection") {
-
-			System.out.println("Au revoir");
-			this.courant.setText("Connection");
-			this.reactive();
-			this.tchat.deconnecte();
 
 		}
 

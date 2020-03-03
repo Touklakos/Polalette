@@ -17,7 +17,7 @@ public class Fenetre extends JFrame{
 	public Fenetre() {
 
 		this.discord = new Discord();
-		this.setTitle("Window");
+		this.setTitle("Tchat");
 		this.setSize(new Dimension(810, 500));
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
