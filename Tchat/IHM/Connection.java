@@ -98,14 +98,11 @@ public class Connection extends JPanel implements ActionListener {
 
 			}
 
-
-
 		} else if(this.courant.getText() == "Deconnection") {
 
 			System.out.println("Au revoir");
 			this.courant.setText("Connection");
 			this.reactive();
-
 			this.tchat.deconnecte();
 
 		}

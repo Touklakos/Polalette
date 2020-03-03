@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 /**
  * Cette classe represente un client qui veux se connecter à un tchat
  */
-public class Client implements Ecouteur {
+public abstract class Client implements Ecouteur {
 
   /**
    * Le port par defaut qu'utilisera le client
@@ -68,6 +68,10 @@ public class Client implements Ecouteur {
 
   }
 
+  /**
+   * Cette méthode permet de retourner le nom du client
+   * @return Le nom du client
+   */
   @Override
   public String getNom() {
 
@@ -82,19 +86,10 @@ public class Client implements Ecouteur {
    */
   public void envoit(String message) {
 
-    this.ecoute.envoit(this.getNom() + " : " + message);
+    this.ecoute.envoit(message);
 
   }
 
-  /**
-   * Cette méthode permet de connaitre la socket qu'utilise le client
-   * @return La socket utilisé par le client
-   */
-  public Socket getSocket() {
-
-    return this.client;
-
-  }
 
   /**
    * Cette fonction permet au client de traiter les messages qu'il recoit du processus d'écoute
@@ -108,13 +103,13 @@ public class Client implements Ecouteur {
   }
 
   /**
-   * Cette méthode permet de deconnecter le client envoyant un message spécial au serveur
+   * Cette méthode permet de deconnecter le client en envoyant un message spécial au serveur
    */
   public void close() {
 
     try {
 
-      this.envoit("CLOSE");
+      this.envoit("\\CLOSE");
       this.client.close();
       this.ecoute.close();
 

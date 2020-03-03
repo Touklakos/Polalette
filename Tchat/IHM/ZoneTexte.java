@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.JScrollPane;
 
 
 public class ZoneTexte extends JPanel {
@@ -32,7 +33,8 @@ public class ZoneTexte extends JPanel {
 		this.add(this.label, BorderLayout.NORTH);
 
 		this.textArea = new JTextArea(TAILLE_AREA_X, TAILLE_AREA_Y);
-		this.add(this.textArea, BorderLayout.CENTER);
+		this.add(new JScrollPane(this.textArea), BorderLayout.CENTER);
+		//this.add(this.textArea, BorderLayout.CENTER);
 
 	}
 
@@ -46,7 +48,7 @@ public class ZoneTexte extends JPanel {
 	public JTextArea getJTextArea() {
 
 		return this.textArea;
-		
+
 	}
 
 

@@ -20,13 +20,17 @@ import javax.swing.JButton;
 import javax.swing.GroupLayout;
 
 
+import java.util.List;
+import java.util.LinkedList;
+
+
 
 import client_serveur.ClientGraphique;
 import client_serveur.ServeurDeconnecteException;
 
 
 
-public class Tchat extends JPanel implements ActionListener {
+public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 
 	private ZoneTexte connectes;
@@ -40,11 +44,12 @@ public class Tchat extends JPanel implements ActionListener {
 	private ClientGraphique clientGraphique;
 	private String nom;
 
+	private List<String> nomConnectes;
+
 
 	public Tchat() {
 
-
-
+		this.nomConnectes = new LinkedList<String>();
 
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -103,6 +108,64 @@ public class Tchat extends JPanel implements ActionListener {
 
 	}
 
+	public void setConnectes(List<String> nomConnectes) {
+
+		this.connectes.setText("");
+
+		for(String s : 	nomConnectes) {
+
+			this.connectes.setText(this.connectes.getText() + s);
+
+		}
+
+	}
+
+
+	public void traite(String message) {
+
+		String[] temp;
+
+		temp = message.split(":");
+		System.out.println(message);
+
+		if(temp[0].equals("\\CONNECT")) {
+
+			for(String s : temp) {
+
+				if(s != temp[0]) {
+
+					this.nomConnectes.add(s);
+
+				}
+
+			}
+
+			this.setConnectes(this.nomConnectes);
+
+		} else if(temp[0].equals("\\CLOSE")) {
+
+			for(String s : temp) {
+
+				if(s != temp[0]) {
+
+					this.nomConnectes.remove(s);
+
+				}
+
+			}
+
+			this.setConnectes(this.nomConnectes);
+
+		} else {
+
+			this.discussion.setText(this.discussion.getText() + message);
+
+		}
+
+
+
+	}
+
 
 	public ZoneTexte getMessage() {
 
@@ -130,12 +193,13 @@ public class Tchat extends JPanel implements ActionListener {
 
 	public void deconnecte() {
 
+		this.clientGraphique.envoit("\\CLOSE");
 		this.clientGraphique.close();
 		this.desactive();
 
 	}
 
-	public void connecte(String nom, String ip, String port) throws ServeurDeconnecteException {
+	public void connecte(String nom, String IP, String port) throws ServeurDeconnecteException {
 
 		this.nom = nom;
 
@@ -143,8 +207,9 @@ public class Tchat extends JPanel implements ActionListener {
 
 			try {
 
-				this.clientGraphique = new ClientGraphique(this.message.getJTextArea(), this.discussion.getJTextArea(), this.nom);
+				this.clientGraphique = new ClientGraphique(this);
 				this.reactive();
+				this.clientGraphique.envoit("\\CONNECT:" + this.getNom());
 
 			} catch(ServeurDeconnecteException e) {
 
@@ -156,23 +221,25 @@ public class Tchat extends JPanel implements ActionListener {
 
 	}
 
+	public void envoit() {
+
+    this.clientGraphique.envoit(this.getMessage().getText());
+    this.getMessage().setText("");
+
+  }
+
 	@Override
 	protected void paintComponent(Graphics g){
 
 
 	}
 
+
 	private void modifEditable(boolean b) {
 
 		this.connectes.setEditable(b);
 		this.discussion.setEditable(b);
 		this.message.setEditable(b);
-
-	}
-
-	private modifEditable(boolean b) {
-
-		this.modifEditable(b);
 		this.actif = b;
 		this.setVisible(b);
 	}
@@ -196,7 +263,7 @@ public class Tchat extends JPanel implements ActionListener {
 
 		if(evt == this.envoyer) {
 
-			this.clientGraphique.envoit();
+			this.envoit();
 
 		}
 

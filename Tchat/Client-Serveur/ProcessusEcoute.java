@@ -61,6 +61,9 @@ public class ProcessusEcoute implements Runnable{
 
     while(this.enMarche) {
 
+      System.out.println("test");
+
+
       try {
 
         String temp = this.recoit();
@@ -88,6 +91,8 @@ public class ProcessusEcoute implements Runnable{
    */
   public void close() {
 
+    System.out.println("izi !");
+
     this.enMarche = false;
 
   }
@@ -107,7 +112,7 @@ public class ProcessusEcoute implements Runnable{
   public String getNom() {
 
     return this.ecouteur.getNom();
-    
+
   }
 
 

@@ -1,4 +1,4 @@
-
+/*
 import java.util.Scanner;
 import client_serveur.Client;
 import client_serveur.ServeurDeconnecteException;
@@ -14,7 +14,7 @@ public class TestClient {
       String s = new String();
       Scanner sc = new Scanner(System.in);
 
-      while(!s.equals("CLOSE")) {
+      while(!s.equals("\\CLOSE")) {
 
         s = sc.nextLine();
         c.envoit(s);
@@ -31,4 +31,4 @@ public class TestClient {
 
   }
 
-}
+}*/

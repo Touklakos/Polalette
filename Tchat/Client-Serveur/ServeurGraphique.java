@@ -12,10 +12,8 @@ public class ServeurGraphique extends Serveur {
    */
   public void traite(String message, ProcessusEcoute processusEcoute) {
 
-    super.traite(message + "\n", processusEcoute);
+    super.traite(message, processusEcoute);
 
   }
-
-
 
 }

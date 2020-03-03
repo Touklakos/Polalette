@@ -2,7 +2,7 @@
 package client_serveur;
 
 /**
- * Cette interface definit les objets qui peuvent ecouter d'autre processus
+ * Cette interface definit les objets qui peuvent ecouter d'autres processus
  */
 public interface Ecouteur {
 
