@@ -47,7 +47,9 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	private List<String> nomConnectes;
 
 
+
 	public Tchat() {
+
 
 		this.nomConnectes = new LinkedList<String>();
 
@@ -199,6 +201,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		this.message.setText("");
 		this.discussion.setText("");
 		this.connectes.setText("");
+		this.nomConnectes.clear();
 		this.desactive();
 
 	}

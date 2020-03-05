@@ -16,7 +16,7 @@ public class Fenetre extends JFrame{
 
 	public Fenetre() {
 
-		this.discord = new Discord();
+		this.discord = new Discord(this);
 		this.setTitle("Tchat");
 		this.setSize(new Dimension(810, 500));
 		this.setLocationRelativeTo(null);
@@ -26,6 +26,5 @@ public class Fenetre extends JFrame{
 		this.setVisible(true);
 
 	}
-
 
 }

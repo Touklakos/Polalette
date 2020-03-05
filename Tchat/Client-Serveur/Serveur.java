@@ -179,6 +179,11 @@ public class Serveur implements Ecouteur {
       this.nomClients.put(processusEcoute, temp[1]);
       this.connectAll(processusEcoute);
 
+    } else if(temp[0].equals("\\MSG")) {
+
+      this.nomClients.get(temp[1]).envoit(temp[1] + " : " + temp[2]);
+      this.connectAll(processusEcoute);
+
     } else {
 
       this.envoitAll(this.nomClients.get(processusEcoute) + " : " + message + "\n");

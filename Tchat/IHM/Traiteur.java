@@ -7,5 +7,6 @@ package ihm;
 public interface Traiteur {
 
   public void traite(String message);
+  public String getNom();
 
 }

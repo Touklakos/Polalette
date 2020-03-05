@@ -18,14 +18,10 @@ public class Discord extends JPanel {
 	private Connection connection;
 	private Tchat tchat;
 
-	public Discord() {
-
-	//	this.setLayout(new GridLayout(2, 1, 10, 10));
+	public Discord(Fenetre fenetre) {
 
 		this.tchat = new Tchat();
-
-
-		this.connection = new Connection(this.tchat);
+		this.connection = new Connection(this.tchat, fenetre);
 		this.add(this.connection);
 		this.add(this.tchat);
 
@@ -36,6 +32,5 @@ public class Discord extends JPanel {
 
 
 	}
-
 
 }

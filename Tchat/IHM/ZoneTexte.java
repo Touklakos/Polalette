@@ -10,9 +10,11 @@ package ihm;
 import java.awt.Graphics;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.JScrollPane;
 
@@ -23,7 +25,7 @@ public class ZoneTexte extends JPanel {
 	private static final int TAILLE_AREA_Y = 30;
 
 	private JLabel label;
-	private JTextArea textArea;
+	private JTextPane textArea;
 
 
 	public ZoneTexte(String label, int tailleX, int tailleY) {
@@ -33,9 +35,10 @@ public class ZoneTexte extends JPanel {
 		this.label = new JLabel(label, SwingConstants.CENTER);
 		this.add(this.label, BorderLayout.NORTH);
 
-		this.textArea = new JTextArea(tailleX, tailleY);
+		this.textArea = new JTextPane();
+		this.textArea.setSize(tailleX, tailleY);
+		this.textArea.setPreferredSize(new Dimension(tailleX, tailleY));
 		this.add(new JScrollPane(this.textArea), BorderLayout.CENTER);
-		//this.add(this.textArea, BorderLayout.CENTER);
 
 	}
 
@@ -52,7 +55,7 @@ public class ZoneTexte extends JPanel {
 
 	}
 
-	public JTextArea getJTextArea() {
+	public JTextPane getJTextArea() {
 
 		return this.textArea;
 

@@ -30,9 +30,14 @@ public class Connection extends JPanel implements ActionListener {
 
 
 	private Tchat tchat;
+	private Fenetre fenetre;
 
 
-	public Connection(Tchat tchat) {
+
+	public Connection(Tchat tchat, Fenetre fenetre) {
+
+		this.fenetre = fenetre;
+
 
 
 		this.nom = new ChampTexte("Nom", 20);
@@ -85,9 +90,7 @@ public class Connection extends JPanel implements ActionListener {
 
 		if(!(this.nom.getText().equals(""))) {
 
-			this.repaint();
-
-			if(this.courant.getText() == "Connection") {
+			if(this.courant.getText().equals("Connection")) {
 
 				try {
 
@@ -102,7 +105,7 @@ public class Connection extends JPanel implements ActionListener {
 
 				}
 
-			} else if(this.courant.getText() == "Deconnection") {
+			} else if(this.courant.getText().equals("Deconnection")) {
 
 				System.out.println("Au revoir");
 				this.courant.setText("Connection");
@@ -110,6 +113,8 @@ public class Connection extends JPanel implements ActionListener {
 				this.tchat.deconnecte();
 
 			}
+
+			this.fenetre.repaint();
 
 		}
 

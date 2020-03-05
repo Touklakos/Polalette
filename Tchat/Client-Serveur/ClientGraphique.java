@@ -5,29 +5,30 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.JTextComponent;
 
 import ihm.Tchat;
+import ihm.Traiteur;
 
 /**
- * Cette classe represente un client avec une interface graphique qui veux se connecter à un tchat
+ * Cette classe represente un client avec une interface graphique qui veux se connecter à un traiteur
  */
 public class ClientGraphique extends Client {
 
-  private Tchat tchat;
+  private Traiteur traiteur;
 
   /*
    * Ce constructeur permet de créer un nouveau client graphique
    * @param
    */
-  public ClientGraphique(Tchat tchat) throws ServeurDeconnecteException {
+  public ClientGraphique(Tchat traiteur) throws ServeurDeconnecteException {
 
     super();
-    this.tchat = tchat;
+    this.traiteur = traiteur;
 
   }
 
-  public ClientGraphique(String IP, int port, Tchat tchat) throws ServeurDeconnecteException {
+  public ClientGraphique(String IP, int port, Tchat traiteur) throws ServeurDeconnecteException {
 
     super(IP, port);
-    this.tchat = tchat;
+    this.traiteur = traiteur;
 
   }
 
@@ -35,14 +36,14 @@ public class ClientGraphique extends Client {
   @Override
   public void traite(String message, ProcessusEcoute processusEcoute) {
 
-    this.tchat.traite(message);
+    this.traiteur.traite(message);
 
   }
 
   @Override
   public String getNom() {
 
-    return this.tchat.getNom();
+    return this.traiteur.getNom();
 
   }
 
