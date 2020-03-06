@@ -39,6 +39,8 @@ public class Serveur implements Ecouteur {
 
   private boolean enMarche = true;
 
+
+
   /**
    * Ce constructeur permet de créer un nouveau serveur
    *
@@ -107,7 +109,7 @@ public class Serveur implements Ecouteur {
   public void connectAll(ProcessusEcoute nouveau) {
 
     Set<ProcessusEcoute> temp = this.clients;
-    String tempString = "\\CONNECT:";
+    String tempString = MotCle.CONNECT.getCommand() + ":";
 
     for(ProcessusEcoute s : temp) {
 
@@ -116,7 +118,7 @@ public class Serveur implements Ecouteur {
         System.out.println(this.nomClients.get(nouveau));
         System.out.println(this.nomClients.get(s));
 
-        s.envoit("\\CONNECT:" + this.nomClients.get(nouveau));
+        s.envoit(MotCle.CONNECT.getCommand() + ":" + this.nomClients.get(nouveau));
         tempString += this.nomClients.get(s) + ":";
 
       } else {
@@ -126,8 +128,6 @@ public class Serveur implements Ecouteur {
       }
 
     }
-
-    System.out.println("allo ? : " + tempString);
 
     nouveau.envoit(tempString);
 
@@ -141,12 +141,12 @@ public class Serveur implements Ecouteur {
 
       if(s != dernier) {
 
-        s.envoit("\\CLOSE:" + this.nomClients.get(dernier));
-        dernier.envoit("\\CLOSE:" + this.nomClients.get(s));
+        s.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(dernier));
+        dernier.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(s));
 
       } else {
 
-        dernier.envoit("\\CLOSE:" + this.nomClients.get(dernier));
+        dernier.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(dernier));
 
       }
 
@@ -158,6 +158,66 @@ public class Serveur implements Ecouteur {
 
   }
 
+  private boolean aRecuCommande(String message, MotCle commande) {
+
+    System.out.println("Le message du regexp : " + message);
+    System.out.println("La regexp : " + commande.getRegexp());
+
+    if(message.matches(commande.getRegexp())) {
+
+      return true;
+
+    }
+
+    return false;
+
+  }
+
+  private void traiteClose(ProcessusEcoute processusEcoute) {
+    this.deconnecte(processusEcoute);
+  }
+
+  private void traiteConnect(String message, ProcessusEcoute processusEcoute) {
+
+    String[] temp = message.split(":");
+    if(this.nomClients.containsKey(processusEcoute)) {
+
+      this.nomClients.replace(processusEcoute, temp[1]);
+
+    } else {
+
+      this.nomClients.put(processusEcoute, temp[1]);
+      this.connectAll(processusEcoute);
+
+    }
+
+  }
+
+  private void traiteMsg(String message, ProcessusEcoute processusEcoute) {
+
+    String[] temp = message.split(":");
+    for(ProcessusEcoute p : this.nomClients.keySet()) {
+      if(this.nomClients.get(p).equals(temp[1])) {
+
+        p.envoit(this.nomClients.get(processusEcoute) + " : " + temp[2] + "\n");
+        processusEcoute.envoit(this.nomClients.get(processusEcoute) + " : " + temp[2] + "\n");
+
+      }
+    }
+  }
+
+  private void traiteHelp(ProcessusEcoute processusEcoute) {
+
+    String messageCommande = new String("");
+
+    for(MotCle m : MotCle.commandeUtilisateur()) {
+      messageCommande += "\n" + m.getCommand() + "\n" + m.getDescription() + "\n";
+    }
+
+    processusEcoute.envoit(this.getNom() + " : Liste des commandes utilisable\n" + messageCommande);
+
+  }
+
   /**
    * Cette méthode permet de traiter un message envoyé par un client
    * @param message Le message envoyé par le client
@@ -165,30 +225,13 @@ public class Serveur implements Ecouteur {
    */
   public void traite(String message, ProcessusEcoute processusEcoute) {
 
-    String[] temp = message.split(":");
     System.out.print(message);
 
-    if(message.equals("\\CLOSE")) {
-
-      System.out.println("oscour");
-
-      this.deconnecte(processusEcoute);
-
-    } else if(temp[0].equals("\\CONNECT")) {
-
-      this.nomClients.put(processusEcoute, temp[1]);
-      this.connectAll(processusEcoute);
-
-    } else if(temp[0].equals("\\MSG")) {
-
-      this.nomClients.get(temp[1]).envoit(temp[1] + " : " + temp[2]);
-      this.connectAll(processusEcoute);
-
-    } else {
-
-      this.envoitAll(this.nomClients.get(processusEcoute) + " : " + message + "\n");
-
-    }
+    if(this.aRecuCommande(message, MotCle.CLOSE)) this.traiteClose(processusEcoute);
+    else if(this.aRecuCommande(message, MotCle.CONNECT)) this.traiteConnect(message, processusEcoute);
+    else if(this.aRecuCommande(message, MotCle.MSG)) this.traiteMsg(message, processusEcoute);
+    else if(this.aRecuCommande(message, MotCle.HELP)) this.traiteHelp(processusEcoute);
+    else this.envoitAll(this.nomClients.get(processusEcoute) + " : " + message + "\n");
 
   }
 
@@ -197,7 +240,7 @@ public class Serveur implements Ecouteur {
    */
   public void open() {
 
-    while(enMarche) {
+    while(this.enMarche) {
 
       try {
 

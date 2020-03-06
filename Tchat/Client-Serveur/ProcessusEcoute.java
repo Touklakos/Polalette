@@ -61,9 +61,6 @@ public class ProcessusEcoute implements Runnable{
 
     while(this.enMarche) {
 
-      System.out.println("test");
-
-
       try {
 
         String temp = this.recoit();
@@ -90,8 +87,6 @@ public class ProcessusEcoute implements Runnable{
    * Cette méthode permet d'arrêter le processus d'écoute
    */
   public void close() {
-
-    System.out.println("izi !");
 
     this.enMarche = false;
 

@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 /**
  * Cette classe represente un client qui veux se connecter à un tchat
  */
-public abstract class Client implements Ecouteur {
+public class Client implements Ecouteur {
 
   /**
    * Le port par defaut qu'utilisera le client
@@ -109,7 +109,7 @@ public abstract class Client implements Ecouteur {
 
     try {
 
-      this.envoit("\\CLOSE");
+      this.envoit(MotCle.CLOSE.getCommand());
       this.client.close();
       this.ecoute.close();
 
