@@ -10,6 +10,7 @@ package ihm;
 import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.GridBagLayout;
@@ -17,6 +18,7 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.GroupLayout;
 
 
@@ -27,6 +29,7 @@ import java.util.LinkedList;
 
 import client_serveur.ClientGraphique;
 import client_serveur.ServeurDeconnecteException;
+import client_serveur.MotCle;
 
 
 
@@ -36,6 +39,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	private ZoneTexte connectes;
 	private ZoneTexte discussion;
 	private ZoneTexte message;
+	private JComboBox typeMessage;
 	private JButton envoyer;
 
 	private boolean actif;
@@ -94,8 +98,23 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		c.fill = GridBagConstraints.BOTH;
 		this.add(this.message, c);
 
-		this.envoyer = new JButton("Envoyer");
+		this.typeMessage = new JComboBox();
 		c.gridx = 1;
+		c.gridy = 3;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridwidth = 1;
+		c.gridheight = GridBagConstraints.REMAINDER;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(10, 15, 0, 0);
+		c.fill = GridBagConstraints.BOTH;
+		this.typeMessage.setSize(new Dimension(3, 6));
+		this.typeMessage.addItem("message privé");
+		this.typeMessage.addItem("groupe");
+		this.add(this.typeMessage, c);
+
+		this.envoyer = new JButton("Envoyer");
+		c.gridx = 2;
 		c.gridy = 3;
 		c.weightx = 1;
 		c.weighty = 1;
@@ -108,6 +127,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 
 		this.envoyer.addActionListener(this);
+		this.typeMessage.addActionListener(this);
 		this.desactive();
 
 	}
@@ -125,42 +145,55 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	}
 
 
+  private boolean aRecuCommande(String message, MotCle commande) {
+
+    String[] temp = message.split(":");
+    if(temp[0].equals(commande.getCommand())) {
+
+      return true;
+
+    }
+
+    return false;
+
+  }
+
+  private void traiteClose(String message) {
+		String[] temp = message.split(":");
+
+		for(String s : temp) {
+
+			if(s != temp[0]) {
+
+				this.nomConnectes.remove(s);
+
+			}
+
+		}
+
+		this.setConnectes(this.nomConnectes);
+
+  }
+
+  private void traiteConnect(String message) {
+
+    String[] temp = message.split(":");
+		for(String s : temp) {
+			if(s != temp[0]) {
+				this.nomConnectes.add(s);
+			}
+		}
+		this.setConnectes(this.nomConnectes);
+  }
+
 	public void traite(String message) {
 
-		String[] temp;
-
-		temp = message.split(":");
 		System.out.println(message);
 
-		if(temp[0].equals("\\CONNECT")) {
+		if(this.aRecuCommande(message, MotCle.CONNECT)) this.traiteConnect(message);
+		else if(this.aRecuCommande(message, MotCle.CLOSE)) this.traiteClose(message);
 
-			for(String s : temp) {
-
-				if(s != temp[0]) {
-
-					this.nomConnectes.add(s);
-
-				}
-
-			}
-
-			this.setConnectes(this.nomConnectes);
-
-		} else if(temp[0].equals("\\CLOSE")) {
-
-			for(String s : temp) {
-
-				if(s != temp[0]) {
-
-					this.nomConnectes.remove(s);
-
-				}
-
-			}
-
-			this.setConnectes(this.nomConnectes);
-
-		} else {
+		else {
 
 			this.discussion.setSelectedTextColor(Color.RED);
 			this.discussion.setText(this.discussion.getText() + message);
@@ -196,7 +229,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 	public void deconnecte() {
 
-		this.clientGraphique.envoit("\\CLOSE");
+		this.clientGraphique.envoit(MotCle.CLOSE.getCommand());
 		this.clientGraphique.close();
 		this.message.setText("");
 		this.discussion.setText("");
@@ -216,7 +249,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 				this.clientGraphique = new ClientGraphique(this);
 				this.reactive();
-				this.clientGraphique.envoit("\\CONNECT:" + this.getNom());
+				this.clientGraphique.envoit(MotCle.CONNECT.getCommand() + ":" + this.getNom());
 
 			} catch(ServeurDeconnecteException e) {
 
@@ -230,8 +263,14 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 	public void envoit() {
 
-    this.clientGraphique.envoit(this.getMessage().getText());
-    this.getMessage().setText("");
+		if(this.typeMessage.getItemAt(0).equals("message privé")) {
+
+		} else if(this.typeMessage.getItemAt(0).equals("groupe")) {
+
+			this.clientGraphique.envoit(this.getMessage().getText());
+			this.getMessage().setText("");
+
+		}
 
   }
 
@@ -267,6 +306,10 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		Object evt = e.getSource();
 
 		if(evt == this.envoyer) {
+
+			this.envoit();
+
+		} else if(evt == this.typeMessage) {
 
 			this.envoit();
 

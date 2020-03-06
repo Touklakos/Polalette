@@ -25,7 +25,7 @@ public class ZoneTexte extends JPanel {
 	private static final int TAILLE_AREA_Y = 30;
 
 	private JLabel label;
-	private JTextPane textArea;
+	private JTextArea textArea;
 
 
 	public ZoneTexte(String label, int tailleX, int tailleY) {
@@ -35,9 +35,9 @@ public class ZoneTexte extends JPanel {
 		this.label = new JLabel(label, SwingConstants.CENTER);
 		this.add(this.label, BorderLayout.NORTH);
 
-		this.textArea = new JTextPane();
-		this.textArea.setSize(tailleX, tailleY);
-		this.textArea.setPreferredSize(new Dimension(tailleX, tailleY));
+		this.textArea = new JTextArea(tailleX, tailleY);
+		//this.textArea.setSize();
+		//this.textArea.setPreferredSize(new Dimension(tailleX, tailleY));
 		this.add(new JScrollPane(this.textArea), BorderLayout.CENTER);
 
 	}
@@ -55,7 +55,7 @@ public class ZoneTexte extends JPanel {
 
 	}
 
-	public JTextPane getJTextArea() {
+	public JTextArea getJTextArea() {
 
 		return this.textArea;
 
