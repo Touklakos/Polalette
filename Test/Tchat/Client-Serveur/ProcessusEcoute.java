@@ -30,8 +30,7 @@ public class ProcessusEcoute implements Runnable{
 
 
   /**
-   * Cette méthode permet de créer un nouveau processus d'écoute
-   *
+   * Cette méthode permet de créer un nouveau processus d'écoute<br>
    * Après la création de l'objet il doit être mis dans un Thread puis lancé
    * @param ecoute La socket d'emission et de récéption de message
    * @param ecouteur L'objet qui va traiter les messages reçu
@@ -103,7 +102,10 @@ public class ProcessusEcoute implements Runnable{
 
   }
 
-
+  /**
+   * Cette méthode permet de connaitre le nom de l'ecouteur
+   * @return Le nom de l'ecouteur
+   */
   public String getNom() {
 
     return this.ecouteur.getNom();

@@ -10,6 +10,9 @@ package ihm;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
+/**
+ * Cette classe représente une fenetre sur laquelle va s'afficher notre discord
+ */
 public class Fenetre extends JFrame{
 
 	private Discord discord;

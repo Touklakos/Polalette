@@ -29,8 +29,7 @@ public class Client implements Ecouteur {
   private ProcessusEcoute ecoute;
 
   /**
-   * Ce constructeur permet de créer un nouveau client
-   *
+   * Ce constructeur permet de créer un nouveau client<br>
    * Les paramètres(adresse IP, port) par defaut seront pris
    * @throws ServeurDeconnecteException Si le serveur n'est pas disponible
    */
@@ -68,10 +67,6 @@ public class Client implements Ecouteur {
 
   }
 
-  /**
-   * Cette méthode permet de retourner le nom du client
-   * @return Le nom du client
-   */
   @Override
   public String getNom() {
 
@@ -91,11 +86,7 @@ public class Client implements Ecouteur {
   }
 
 
-  /**
-   * Cette fonction permet au client de traiter les messages qu'il recoit du processus d'écoute
-   * @param message Le message reçu
-   * @param processusEcoute Le processus qui a reçu et transmis le message
-   */
+  @Override
   public void traite(String message, ProcessusEcoute processusEcoute) {
 
     System.out.println(message);

@@ -2,14 +2,15 @@
 package client_serveur;
 
 
+/**
+ * Cette classe représente le serveur du tchat<br>
+ * Quand on est connecté à celui-ci et que l'on envoit un message il sera transmis à touts les autres clients connectés
+ * @deprecated
+ */
 public class ServeurGraphique extends Serveur {
 
 
-  /**
-   * Cette méthode permet de traiter un message envoyé par un client
-   * @param message Le message envoyépar le client
-   * @param client Le client
-   */
+  @Override
   public void traite(String message, ProcessusEcoute processusEcoute) {
 
     super.traite(message, processusEcoute);

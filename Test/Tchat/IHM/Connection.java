@@ -20,7 +20,9 @@ import javax.swing.BoxLayout;
 import client_serveur.ClientGraphique;
 import client_serveur.ServeurDeconnecteException;
 
-
+/**
+ * Cette classe représente des ChampTexte et un JButton qui permettent de se connecter à un serveur
+ */
 public class Connection extends JPanel implements ActionListener {
 
 	private ChampTexte nom;
@@ -33,12 +35,14 @@ public class Connection extends JPanel implements ActionListener {
 	private Fenetre fenetre;
 
 
-
+	/**
+	 * Ce constructeur permet de créer une nouvelle connection
+	 * @param tchat Le tchat qui va permettre la conversation avec le serveur
+	 * @param fenetre La fenetre sur laquelle va être affiché la connection
+	 */
 	public Connection(Tchat tchat, Fenetre fenetre) {
 
 		this.fenetre = fenetre;
-
-
 
 		this.nom = new ChampTexte("Nom", 20);
 		this.add(this.nom);

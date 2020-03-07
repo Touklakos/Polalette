@@ -4,7 +4,6 @@ package client_serveur;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.JTextComponent;
 
-import ihm.Tchat;
 import ihm.Traiteur;
 
 /**
@@ -18,14 +17,14 @@ public class ClientGraphique extends Client {
    * Ce constructeur permet de créer un nouveau client graphique
    * @param
    */
-  public ClientGraphique(Tchat traiteur) throws ServeurDeconnecteException {
+  public ClientGraphique(Traiteur traiteur) throws ServeurDeconnecteException {
 
     super();
     this.traiteur = traiteur;
 
   }
 
-  public ClientGraphique(String IP, int port, Tchat traiteur) throws ServeurDeconnecteException {
+  public ClientGraphique(String IP, int port, Traiteur traiteur) throws ServeurDeconnecteException {
 
     super(IP, port);
     this.traiteur = traiteur;

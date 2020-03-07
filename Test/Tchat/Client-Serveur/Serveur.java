@@ -13,8 +13,8 @@ import java.util.LinkedHashSet;
 import java.util.Hashtable;
 
 
-/*
- * Cette classe représente le serveur du tchat
+/**
+ * Cette classe représente le serveur du tchat<br>
  * Quand on est connecté à celui-ci et que l'on envoit un message il sera transmis à touts les autres clients connectés
  */
 public class Serveur implements Ecouteur {
@@ -42,8 +42,7 @@ public class Serveur implements Ecouteur {
 
 
   /**
-   * Ce constructeur permet de créer un nouveau serveur
-   *
+   * Ce constructeur permet de créer un nouveau serveur<br>
    * Les paramètres(adresse IP, port) par defaut seront pris
    */
   public Serveur() {
@@ -83,7 +82,7 @@ public class Serveur implements Ecouteur {
    * Cette méthode permet d'envoyer un message à chaque client
    * @param message Le messag à envoyer
    */
-  public void envoitAll(String message) {
+  private void envoitAll(String message) {
 
     Set<ProcessusEcoute> temp = this.clients;
 
@@ -95,10 +94,7 @@ public class Serveur implements Ecouteur {
 
   }
 
-  /**
-   * Cette méthode permet de connaitre le nom du serveur
-   * @return Le nom du serveur
-   */
+
   @Override
   public String getNom() {
 
@@ -106,47 +102,47 @@ public class Serveur implements Ecouteur {
 
   }
 
-  public void connectAll(ProcessusEcoute nouveau) {
+  private void connectAll(ProcessusEcoute nouveau) {
 
     Set<ProcessusEcoute> temp = this.clients;
     String tempString = MotCle.CONNECT.getCommand() + ":";
 
     for(ProcessusEcoute s : temp) {
 
-      if(s != nouveau) {
-
-        System.out.println(this.nomClients.get(nouveau));
-        System.out.println(this.nomClients.get(s));
-
-        s.envoit(MotCle.CONNECT.getCommand() + ":" + this.nomClients.get(nouveau));
-        tempString += this.nomClients.get(s) + ":";
-
-      } else {
-
-        tempString += this.nomClients.get(nouveau) + ":";
-
-      }
+      tempString += this.nomClients.get(s) + ":";
 
     }
 
-    nouveau.envoit(tempString);
+    for(ProcessusEcoute s : temp) {
+
+      s.envoit(tempString);
+
+    }
 
   }
 
-  public void deconnecte(ProcessusEcoute dernier) {
+  private void deconnecte(ProcessusEcoute dernier) {
 
-    Set<ProcessusEcoute> temp = this.clients;
+    if(!(this.nomClients.containsKey(dernier))) {
 
-    for(ProcessusEcoute s : temp) {
+      dernier.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(dernier));
 
-      if(s != dernier) {
+    } else {
 
-        s.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(dernier));
-        dernier.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(s));
+      Set<ProcessusEcoute> temp = this.clients;
 
-      } else {
+      for(ProcessusEcoute s : temp) {
 
-        dernier.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(dernier));
+        if(s != dernier) {
+
+          s.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(dernier));
+          dernier.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(s));
+
+        } else {
+
+          dernier.envoit(MotCle.CLOSE.getCommand() + ":" + this.nomClients.get(dernier));
+
+        }
 
       }
 
@@ -155,6 +151,14 @@ public class Serveur implements Ecouteur {
     dernier.close();
     this.clients.remove(dernier);
     this.nomClients.remove(dernier);
+
+  }
+
+  private void refuse(ProcessusEcoute processusEcoute, String raison) {
+
+    processusEcoute.envoit(MotCle.REFUSE.getCommand() + ":" + raison);
+    processusEcoute.close();
+    this.clients.remove(processusEcoute);
 
   }
 
@@ -180,11 +184,19 @@ public class Serveur implements Ecouteur {
   private void traiteConnect(String message, ProcessusEcoute processusEcoute) {
 
     String[] temp = message.split(":");
-    if(this.nomClients.containsKey(processusEcoute)) {
 
-      this.nomClients.replace(processusEcoute, temp[1]);
+
+    if(this.nomClients.contains(temp[1])) {
+
+      this.refuse(processusEcoute, "Le nom existe deja");
 
     } else {
+
+    //  if(this.nomClients.containsKey(processusEcoute)) {
+    //
+    //    this.nomClients.remove(processusEcoute);
+    //
+    //  }
 
       this.nomClients.put(processusEcoute, temp[1]);
       this.connectAll(processusEcoute);
@@ -218,11 +230,7 @@ public class Serveur implements Ecouteur {
 
   }
 
-  /**
-   * Cette méthode permet de traiter un message envoyé par un client
-   * @param message Le message envoyé par le client
-   * @param client Le client
-   */
+  @Override
   public void traite(String message, ProcessusEcoute processusEcoute) {
 
     System.out.print(message);

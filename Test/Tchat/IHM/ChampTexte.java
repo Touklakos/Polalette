@@ -14,13 +14,23 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+
+/**
+ * Cette classe représente une JLabel lié à un JtextField
+ * @see JLabel
+ * @see JTextField
+ */
 public class ChampTexte extends JPanel{
 
 
 	private JLabel label;
 	private JTextField textField;
 
-
+	/**
+	 * Ce constructeur permet de créer un nouveau champ texte
+	 * @param label La chaine qui figurera dans le JLabel
+	 * @param taille La taille du JTextField
+	 */
 	public ChampTexte(String label, int taille) {
 
 		this.setMinimumSize(new Dimension(taille, taille));
@@ -35,12 +45,20 @@ public class ChampTexte extends JPanel{
 
 	}
 
+	/**
+	 * Cette méthode appelle la méthode du JTextField
+	 * @see javax.swing.JTextField#setEditable(boolean)
+	 */
 	public void setEditable(boolean b) {
 
 		this.textField.setEditable(b);
 
 	}
 
+	/**
+	 * Cette méthode appelle la méthode du JTextField
+	 * @see javax.swing.JTextField#getText()
+	 */
 	public String getText() {
 
 		return this.textField.getText();

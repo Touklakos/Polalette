@@ -32,14 +32,24 @@ import client_serveur.ServeurDeconnecteException;
 import client_serveur.MotCle;
 
 
-
+/**
+ * Cette classe représente une "Tchating room"
+ * Fonctionnalité :<br>
+ * -- Envoyer des messages généraux
+ * -- Envoyer des messages privés
+ */
 public class Tchat extends JPanel implements ActionListener, Traiteur {
+
+
+	private static final String MESSAGE_PRIVE = "message privé";
+	private static final String MESSAGE_GROUPE = "groupe";
 
 
 	private ZoneTexte connectes;
 	private ZoneTexte discussion;
 	private ZoneTexte message;
-	private JComboBox typeMessage;
+	private JComboBox<String> typeMessage;
+	private JComboBox<String> cibleMsg;
 	private JButton envoyer;
 
 	private boolean actif;
@@ -48,12 +58,19 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	private ClientGraphique clientGraphique;
 	private String nom;
 
+	private Fenetre fenetre;
+
+
 	private List<String> nomConnectes;
 
 
+	/**
+	 * Ce constructeur permet de créer un nouveau Tchat
+	 * @param fenetre Le fenetre sur laquelle le Tchat s'affiche
+	 */
+	public Tchat(Fenetre fenetre) {
 
-	public Tchat() {
-
+		this.fenetre = fenetre;
 
 		this.nomConnectes = new LinkedList<String>();
 
@@ -98,7 +115,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		c.fill = GridBagConstraints.BOTH;
 		this.add(this.message, c);
 
-		this.typeMessage = new JComboBox();
+		this.typeMessage = new JComboBox<String>();
 		c.gridx = 1;
 		c.gridy = 3;
 		c.weightx = 1;
@@ -109,12 +126,28 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		c.insets = new Insets(10, 15, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
 		this.typeMessage.setSize(new Dimension(3, 6));
-		this.typeMessage.addItem("message privé");
-		this.typeMessage.addItem("groupe");
+		this.typeMessage.addItem(Tchat.MESSAGE_GROUPE);
+		this.typeMessage.addItem(Tchat.MESSAGE_PRIVE);
 		this.add(this.typeMessage, c);
 
-		this.envoyer = new JButton("Envoyer");
+		this.cibleMsg = new JComboBox<String>();
 		c.gridx = 2;
+		c.gridy = 3;
+		c.weightx = 1;
+		c.weighty = 1;
+		c.gridwidth = 1;
+		c.gridheight = GridBagConstraints.REMAINDER;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(10, 15, 0, 0);
+		c.fill = GridBagConstraints.BOTH;
+		this.typeMessage.setSize(new Dimension(3, 6));
+		this.cibleMsg.addItem("");
+		this.cibleMsg.setEditable(false);
+		this.cibleMsg.setEnabled(false);
+		this.add(this.cibleMsg, c);
+
+		this.envoyer = new JButton("Envoyer");
+		c.gridx = 3;
 		c.gridy = 3;
 		c.weightx = 1;
 		c.weighty = 1;
@@ -132,7 +165,8 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 	}
 
-	public void setConnectes(List<String> nomConnectes) {
+
+	private void setConnectes(List<String> nomConnectes) {
 
 		this.connectes.setText("");
 
@@ -158,40 +192,52 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
   }
 
-  private void traiteClose(String message) {
+	private void traiteRefuse(String message) {
+
+		this.discussion.setText(message);
+
+  }
+
+	private void traiteClose(String message) {
+
 		String[] temp = message.split(":");
-
 		for(String s : temp) {
-
 			if(s != temp[0]) {
-
 				this.nomConnectes.remove(s);
-
+				this.cibleMsg.removeItem(s);
 			}
-
 		}
-
 		this.setConnectes(this.nomConnectes);
-
+		this.fenetre.repaint();
   }
 
   private void traiteConnect(String message) {
 
+		Object save = this.cibleMsg.getSelectedItem();
+		this.nomConnectes.clear();
+		this.cibleMsg.removeAllItems();
     String[] temp = message.split(":");
 		for(String s : temp) {
 			if(s != temp[0]) {
 				this.nomConnectes.add(s);
+				if(!(s.equals(this.getNom()))) {
+					this.cibleMsg.insertItemAt(s, this.cibleMsg.getItemCount());
+				}
 			}
 		}
+		this.cibleMsg.setSelectedItem(save);
 		this.setConnectes(this.nomConnectes);
+		this.fenetre.repaint();
   }
 
+	@Override
 	public void traite(String message) {
 
 		System.out.println(message);
 
 		if(this.aRecuCommande(message, MotCle.CONNECT)) this.traiteConnect(message);
 		else if(this.aRecuCommande(message, MotCle.CLOSE)) this.traiteClose(message);
+		else if(this.aRecuCommande(message, MotCle.REFUSE)) this.traiteRefuse(message);
 
 		else {
 
@@ -203,30 +249,49 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	}
 
 
+	/**
+	 * Cette méthode permet de renvoyer la zone de texte qui contient les messages à envoyer
+	 * @return La zone de texte
+	 */
 	public ZoneTexte getMessage() {
 
 		return this.message;
 
 	}
 
+	/**
+	 * Cette méthode permet de renvoyer la zone de texte qui contient les messages reçu
+	 * @return La zone de texte
+	 */
 	public ZoneTexte getDisscution() {
 
 		return this.discussion;
 
 	}
 
+	/**
+	 * Cette méthode permet de renvoyer la zone de texte qui contient les personnes connectés
+	 * @return La zone de texte
+	 */
 	public ZoneTexte getConnectes() {
 
 		return this.connectes;
 
 	}
 
+	/**
+	 * Cette méthode permet de connaitre le nom de la personne qui utilise le Tchat
+	 * @return Le nom de la personne
+	 */
 	public String getNom() {
 
 		return this.nom;
 
 	}
 
+	/**
+	 * Cette méthode permet à l'utilisateur de se deconnecter
+	 */
 	public void deconnecte() {
 
 		this.clientGraphique.envoit(MotCle.CLOSE.getCommand());
@@ -235,10 +300,18 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		this.discussion.setText("");
 		this.connectes.setText("");
 		this.nomConnectes.clear();
+		this.cibleMsg.removeAllItems();
 		this.desactive();
 
 	}
 
+	/**
+	 * Cette méthode permet à l'utilisateur de se connecter
+	 * @param nom Le nom de l'utilisateur
+	 * @param IP L'adresse IP sur laquelle va se connecter le Tchat
+	 * @param port Le port sur lequel va se connecter le Tchat
+	 * @throws ServeurDeconnecteException Si le tchat ne peut pas se connecter
+	 */
 	public void connecte(String nom, String IP, String port) throws ServeurDeconnecteException {
 
 		this.nom = nom;
@@ -261,11 +334,15 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 	}
 
-	public void envoit() {
 
-		if(this.typeMessage.getItemAt(0).equals("message privé")) {
+	private void envoit() {
 
-		} else if(this.typeMessage.getItemAt(0).equals("groupe")) {
+		if(this.typeMessage.getSelectedItem().equals(Tchat.MESSAGE_PRIVE)) {
+
+			this.clientGraphique.envoit(MotCle.MSG.getCommand() + ":" + this.cibleMsg.getSelectedItem() + ":" + this.getMessage().getText());
+			this.getMessage().setText("");
+
+		} else if(this.typeMessage.getSelectedItem().equals(Tchat.MESSAGE_GROUPE)) {
 
 			this.clientGraphique.envoit(this.getMessage().getText());
 			this.getMessage().setText("");
@@ -311,7 +388,18 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 		} else if(evt == this.typeMessage) {
 
-			this.envoit();
+			if(this.typeMessage.getSelectedItem().equals(Tchat.MESSAGE_PRIVE)) {
+
+				this.cibleMsg.removeItem("");
+				this.cibleMsg.setEnabled(true);
+
+			} else if(this.typeMessage.getSelectedItem().equals(Tchat.MESSAGE_GROUPE)) {
+
+				this.cibleMsg.addItem("");
+				this.cibleMsg.setSelectedItem("");
+				this.cibleMsg.setEnabled(false);
+
+			}
 
 		}
 
