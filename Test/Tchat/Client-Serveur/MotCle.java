@@ -12,27 +12,32 @@ public enum MotCle {
   /**
    * La constante à utiliser quand on veut se deconnecter
    */
-  CLOSE ("CLOSE", "CLOSE", "Permet de se deconnecter du serveur", false),
+  CLOSE ("CLOSE", "^CLOSE", "Permet de se deconnecter du serveur", false),
 
   /**
    * La constante à utiliser quand on veut se connecter
    */
-  CONNECT ("CONNECT", "CONNECT:.+", "Permet de se connecter au serveur", false),
+  CONNECT ("CONNECT", "^CONNECT:.+", "Permet de se connecter au serveur", false),
 
   /**
    * La constante à utiliser quand l'utilisateur veut voir les commandes auquel il a accès
    */
-  HELP ("HELP", "HELP", "Permet d'afficher les commandes", true),
+  HELP ("HELP", "^HELP", "Permet d'afficher les commandes", true),
 
   /**
    * La constante à utiliser quand l'utilisateur veut envoyer un message privé
    */
-  MSG ("MSG", "MSG:.+:.+", "Permet d'envoyer un message privé\nUtilisation :\n\\MSG:nom du destinataire:Le message", false),
+  MSG ("MSG", "^MSG:.+:.+", "Permet d'envoyer un message privé\nUtilisation :\n\\MSG:nom du destinataire:Le message", false),
 
   /**
-   * La constante à utiliser quand l'utilisateur veut envoyer un message privé
+   * La constante à utiliser quand le serveur refuse un client
    */
-  REFUSE ("REFUSE", "REFUSE:.+", "Permet au serveur de refuser des clients pour les raisons qu'il définis", false);
+  REFUSE ("REFUSE", "^REFUSE:.+", "Permet au serveur de refuser des clients pour les raisons qu'il définis", false),
+
+  /**
+   * La constante à utiliser quand le client veut envoyer un message normal au serveur
+   */
+  NORMAL ("NORMAL", "^NORMAL:.+", "Permet au serveur de refuser des clients pour les raisons qu'il définis", false);
 
 
   private String commande = "";
@@ -51,7 +56,7 @@ public enum MotCle {
   }
 
   /**
-   * Cette méthode permet de connaitre le commande à utiliser pour envoyer des messages spéciaux
+   * Cette méthode permet de connaitre la commande à utiliser pour envoyer des messages spéciaux
    * @return La commande à utiliser
    */
   public String getCommand(){

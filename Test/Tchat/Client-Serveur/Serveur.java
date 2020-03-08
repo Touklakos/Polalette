@@ -211,8 +211,8 @@ public class Serveur implements Ecouteur {
     for(ProcessusEcoute p : this.nomClients.keySet()) {
       if(this.nomClients.get(p).equals(temp[1])) {
 
-        p.envoit(this.nomClients.get(processusEcoute) + " : " + temp[2] + "\n");
-        processusEcoute.envoit(this.nomClients.get(processusEcoute) + " : " + temp[2] + "\n");
+        p.envoit(this.nomClients.get(processusEcoute) + ":" + temp[2] + "\n");
+        processusEcoute.envoit(this.nomClients.get(processusEcoute) + ":" + temp[2] + "\n");
 
       }
     }
@@ -226,7 +226,16 @@ public class Serveur implements Ecouteur {
       messageCommande += "\n" + m.getCommand() + "\n" + m.getDescription() + "\n";
     }
 
-    processusEcoute.envoit(this.getNom() + " : Liste des commandes utilisable\n" + messageCommande);
+    processusEcoute.envoit(this.getNom() + ": Liste des commandes utilisable\n" + messageCommande);
+
+  }
+
+
+  private void traiteNormal(String message, ProcessusEcoute processusEcoute) {
+
+    String[] temp = message.split(":");
+
+    this.envoitAll(this.nomClients.get(processusEcoute) + ":" + temp[1] + "\n");
 
   }
 
@@ -239,7 +248,8 @@ public class Serveur implements Ecouteur {
     else if(this.aRecuCommande(message, MotCle.CONNECT)) this.traiteConnect(message, processusEcoute);
     else if(this.aRecuCommande(message, MotCle.MSG)) this.traiteMsg(message, processusEcoute);
     else if(this.aRecuCommande(message, MotCle.HELP)) this.traiteHelp(processusEcoute);
-    else this.envoitAll(this.nomClients.get(processusEcoute) + " : " + message + "\n");
+    else if(this.aRecuCommande(message, MotCle.NORMAL)) this.traiteNormal(message, processusEcoute);
+    else this.deconnecte(processusEcoute);
 
   }
 

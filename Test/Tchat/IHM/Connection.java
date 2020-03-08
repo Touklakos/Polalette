@@ -21,7 +21,7 @@ import client_serveur.ClientGraphique;
 import client_serveur.ServeurDeconnecteException;
 
 /**
- * Cette classe représente des ChampTexte et un JButton qui permettent de se connecter à un serveur
+ * Cette classe représente des ChampTexte et un JButton qui permettent en remplissant les ChampTexte de se connecter à un serveur
  */
 public class Connection extends JPanel implements ActionListener {
 
@@ -94,7 +94,7 @@ public class Connection extends JPanel implements ActionListener {
 
 		if(!(this.nom.getText().equals(""))) {
 
-			if(this.courant.getText().equals("Connection")) {
+			if(this.courant.getText().equals("Connection") && !this.nom.getText().equals("") && !this.ip.getText().equals("") && !this.port.getText().equals("")) {
 
 				try {
 

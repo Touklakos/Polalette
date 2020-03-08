@@ -24,6 +24,7 @@ import javax.swing.GroupLayout;
 
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Hashtable;
 
 
 
@@ -33,16 +34,18 @@ import client_serveur.MotCle;
 
 
 /**
- * Cette classe représente une "Tchating room"
+ * Cette classe représente une "Tchating room"<br>
  * Fonctionnalité :<br>
- * -- Envoyer des messages généraux
- * -- Envoyer des messages privés
+ * -- Envoyer des messages généraux<br>
+ * -- Envoyer des messages privés<br>
  */
 public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 
 	private static final String MESSAGE_PRIVE = "message privé";
 	private static final String MESSAGE_GROUPE = "groupe";
+
+	private static int nb = 1;
 
 
 	private ZoneTexte connectes;
@@ -61,7 +64,24 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	private Fenetre fenetre;
 
 
-	private List<String> nomConnectes;
+	private Hashtable<String, Color> nomConnectes;
+
+
+	private static Color newColor() {
+
+		Tchat.nb++;
+		if(Tchat.nb > 7) Tchat.nb = 1;
+
+		if(Tchat.nb == 1) return Color.BLUE;
+		else if(Tchat.nb == 2) return Color.CYAN;
+		else if(Tchat.nb == 3) return Color.GREEN;
+		else if(Tchat.nb == 4) return Color.MAGENTA;
+		else if(Tchat.nb == 5) return Color.ORANGE;
+		else if(Tchat.nb == 6) return Color.PINK;
+		else if(Tchat.nb == 7) return Color.RED;
+		else return Color.BLACK;
+
+	}
 
 
 	/**
@@ -72,12 +92,12 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 		this.fenetre = fenetre;
 
-		this.nomConnectes = new LinkedList<String>();
+		this.nomConnectes = new Hashtable<String, Color>();
 
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
-		this.connectes = new ZoneTexte("Connectés", 10, 10);
+		this.connectes = new ZoneTexte("Connectés", 0, 0, 100, 300);
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 1;
@@ -90,7 +110,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		this.connectes.setEditable(false);
 		this.add(this.connectes, c);
 
-		this.discussion = new ZoneTexte("Discussion", 16, 50);
+		this.discussion = new ZoneTexte("Discussion", 0, 0, 500, 250);
 		c.gridx = 1;
 		c.gridy = 0;
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -103,7 +123,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 		this.discussion.setEditable(false);
 		this.add(this.discussion, c);
 
-		this.message = new ZoneTexte("Message", 4, 50);
+		this.message = new ZoneTexte("Message", 0, 0, 500, 50);
 		c.gridx = 1;
 		c.gridy = 2;
 		c.gridwidth = GridBagConstraints.REMAINDER;
@@ -166,13 +186,13 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	}
 
 
-	private void setConnectes(List<String> nomConnectes) {
+	private void setConnectes(Hashtable<String, Color> nomConnectes) {
 
 		this.connectes.setText("");
 
-		for(String s : 	nomConnectes) {
+		for(String s : 	nomConnectes.keySet()) {
 
-			this.connectes.setText(this.connectes.getText() + s + "\n");
+			this.connectes.append(s + "\n", nomConnectes.get(s));
 
 		}
 
@@ -214,12 +234,13 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
   private void traiteConnect(String message) {
 
 		Object save = this.cibleMsg.getSelectedItem();
-		this.nomConnectes.clear();
 		this.cibleMsg.removeAllItems();
     String[] temp = message.split(":");
 		for(String s : temp) {
 			if(s != temp[0]) {
-				this.nomConnectes.add(s);
+				if(!(this.nomConnectes.containsKey(s))) {
+					this.nomConnectes.put(s, Tchat.newColor());
+				}
 				if(!(s.equals(this.getNom()))) {
 					this.cibleMsg.insertItemAt(s, this.cibleMsg.getItemCount());
 				}
@@ -234,6 +255,8 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	public void traite(String message) {
 
 		System.out.println(message);
+		String[] temp = message.split(":");
+
 
 		if(this.aRecuCommande(message, MotCle.CONNECT)) this.traiteConnect(message);
 		else if(this.aRecuCommande(message, MotCle.CLOSE)) this.traiteClose(message);
@@ -241,8 +264,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 		else {
 
-			this.discussion.setSelectedTextColor(Color.RED);
-			this.discussion.setText(this.discussion.getText() + message);
+			this.discussion.append(message + "\n", this.nomConnectes.get(temp[0]));
 
 		}
 
@@ -290,7 +312,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	}
 
 	/**
-	 * Cette méthode permet à l'utilisateur de se deconnecter
+	 * Cette méthode permet au Tchat de se deconnecter
 	 */
 	public void deconnecte() {
 
@@ -306,11 +328,11 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 	}
 
 	/**
-	 * Cette méthode permet à l'utilisateur de se connecter
-	 * @param nom Le nom de l'utilisateur
+	 * Cette méthode permet au Tchat de se connecter
+	 * @param nom Le nom qu'utilisera le Tchat
 	 * @param IP L'adresse IP sur laquelle va se connecter le Tchat
 	 * @param port Le port sur lequel va se connecter le Tchat
-	 * @throws ServeurDeconnecteException Si le tchat ne peut pas se connecter
+	 * @throws ServeurDeconnecteException Si le Tchat ne peut pas se connecter
 	 */
 	public void connecte(String nom, String IP, String port) throws ServeurDeconnecteException {
 
@@ -320,7 +342,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 			try {
 
-				this.clientGraphique = new ClientGraphique(this);
+				this.clientGraphique = new ClientGraphique(IP, Integer.parseInt(port), this);
 				this.reactive();
 				this.clientGraphique.envoit(MotCle.CONNECT.getCommand() + ":" + this.getNom());
 
@@ -344,7 +366,7 @@ public class Tchat extends JPanel implements ActionListener, Traiteur {
 
 		} else if(this.typeMessage.getSelectedItem().equals(Tchat.MESSAGE_GROUPE)) {
 
-			this.clientGraphique.envoit(this.getMessage().getText());
+			this.clientGraphique.envoit(MotCle.NORMAL.getCommand() + ":" + this.getMessage().getText());
 			this.getMessage().setText("");
 
 		}

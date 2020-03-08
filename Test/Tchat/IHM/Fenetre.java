@@ -17,6 +17,9 @@ public class Fenetre extends JFrame{
 
 	private Discord discord;
 
+	/**
+	 * Ce constructeur permet de créer une nouvelle fenetre
+	 */
 	public Fenetre() {
 
 		this.discord = new Discord(this);

@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 
 /**
  * Cette classe représente une Connection et un Tchat<br>
- * Nommé "Discord" en référence au Chat vocal et textuel
+ * Nommé "Discord" en référence au Chat vocal et textuel du même nom
  */
 public class Discord extends JPanel {
 
